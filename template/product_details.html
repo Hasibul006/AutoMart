@@ -157,7 +157,11 @@
             <h2>{{ product.name }}</h2>
             <p class="price">{{ product.price }} Tk</p>
             <p class="text-light">Category: {{ product.category.name }}</p>
-            <p class="text-light">Stock: {{ product.stock }}</p>
+            {% if product.stock %}
+                <p class="text-light">Stock: {{ product.stock }}</p>
+            {% else %}
+                <p class="text-danger">Out of Stock</p>
+            {% endif %}
             <h4 class="mt-3">Description</h4>
             <p>{{ product.description }}</p>
         </div>

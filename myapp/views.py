@@ -14,12 +14,19 @@ from django.core.paginator import Paginator
 User = get_user_model() 
 
 def delete_product(request, product_id):
+    if not request.user.role == 'admin':
+        return HttpResponseForbidden("You are not authorized to delete this product.")
+    
     product_to_delete = get_object_or_404(Product, id=product_id)
     product_to_delete.delete()
     messages.success(request, "Product deleted successfully.")
     return redirect('/admin_dashboard')
 
 def update_product(request, product_id):
+
+    if not request.user.role == 'admin':
+        return HttpResponseForbidden("You are not authorized to update this product.")
+
     product = get_object_or_404(Product, id=product_id)
     if request.method == 'POST':
         print(product.image)
@@ -48,6 +55,10 @@ def update_product(request, product_id):
     return render(request, 'update_product.html', {'product': product, 'categories': categories})   
 
 def add_category(request):
+
+    if not request.user.role == 'admin':
+        return HttpResponseForbidden("You are not authorized to add a category.")
+    
     if request.method == 'POST':
         name = request.POST.get('name')
         image = request.FILES.get('image')
@@ -105,6 +116,9 @@ def products(request):
     return render(request, 'products.html', context)
 
 def delete_category(request, category_name):
+    if not request.user.role == 'admin':
+        return HttpResponseForbidden("You are not authorized to delete this category.")
+    
     category_to_delete = get_object_or_404(Category, name=category_name)
     if Product.objects.filter(category=category_to_delete).exists():
         messages.error(request, "Cannot delete a category with associated existing products.")
@@ -114,6 +128,11 @@ def delete_category(request, category_name):
     return redirect('/admin_dashboard')
 
 def add_product(request):
+    if not request.user.role == 'admin':
+        return HttpResponseForbidden("You are not authorized to add a product.")
+    if not request.user.is_authenticated:
+        return redirect('/login')
+    
     if request.method == 'POST':
         # Get POST data
         name = request.POST.get('name').strip()
@@ -174,6 +193,7 @@ def search(request):
 def add_to_cart(request, product_id, quantity=1):
     if not request.user.is_authenticated:
         return redirect('/login')
+    
     product = get_object_or_404(Product, id=product_id)
     user = request.user
     cart, created = Cart.objects.get_or_create(user=user, product=product)
@@ -182,10 +202,15 @@ def add_to_cart(request, product_id, quantity=1):
     return redirect('/cart')
 
 def add_to_cart_with_quantity(request, product_id):
+    if not request.user.is_authenticated:
+        return redirect('/login')
     quantity = int(request.POST.get('quantity', 1))
     return add_to_cart(request, product_id, quantity)
 
 def update_cart_quantity(request, product_id):
+    if not request.user.is_authenticated:
+        return redirect('/login')
+    
     if request.method == 'POST':
         quantity = int(request.POST.get('quantity', 1))
         product = get_object_or_404(Product, id=product_id)
@@ -209,6 +234,7 @@ def remove_from_cart(request, product_id):
 def cart(request):
     if not request.user.is_authenticated:
         return redirect('/login')
+    
     user = request.user
     cart_items = Cart.objects.filter(user=user, checkout=False)
     total_price = sum(item.get_total_price() for item in cart_items)
@@ -240,13 +266,14 @@ def place_order(request):
         order = Order(user=user, fullname=fullname, email=email, phone=phone, address=address, payment_method=payment_method, total_price=total_price)
         order.save()
         for item in cart_items:
-            item.checkout = True
+            item.product.stock -= item.quantity
+            item.product.save()
+            item.delete()
             OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity, price=item.product.price * item.quantity)
-            item.save()
         return redirect('/') 
+    
 def product_details(request, product_id):
     product = Product.objects.get(id=product_id)
-    
     # Calculate the grand total and delivery charge
     quantity = int(request.GET.get('quantity', 1))  # default quantity is 1
     delivery_charge = 50
@@ -268,6 +295,10 @@ def product_details(request, product_id):
     return render(request, 'product_details.html', context)
 
 def delete_user(request, user_name):
+    if request.user.role != 'admin':
+        messages.error(request, "You are not authorized to delete users.")
+        return redirect('/')
+    
     user_to_delete = get_object_or_404(User, username=user_name)
     # Optional: Prevent admin from deleting themselves
     if user_to_delete.role == 'admin':
@@ -286,6 +317,10 @@ def delete_user(request, user_name):
     return redirect('/admin_dashboard')
 
 def admin_dashboard(request):
+    if request.user.role != 'admin':
+        messages.error(request, "You are not authorized to access this page.")
+        return redirect('/')
+    
     if request.method == 'POST':
         logout(request)
         messages.success(request, "Logged out successfully.")
@@ -301,11 +336,9 @@ def admin_dashboard(request):
     }
     return render(request, 'admin_dashboard.html', context)
 
-from django.shortcuts import get_object_or_404, redirect, render
-from django.contrib import messages
-from .models import User
-
 def edit_user(request, user_name):
+    if not request.user.is_authenticated:
+        return redirect('/login')
     user = get_object_or_404(User, username=user_name)
 
     if user.role == 'admin' and user.username != request.user.username:
@@ -403,7 +436,11 @@ def profile(request):
     return render(request, 'profile.html', {'user': request.user, 'orders': recent_orders})  
 
 def orderDetails(request, order_id):
+    if not request.user.is_authenticated:
+        return redirect('/login')
     order = get_object_or_404(Order, id=order_id)
+    if order.user != request.user:
+        return redirect('/')
     order_items = OrderItem.objects.filter(order=order)
     return render(request, 'orderDetails.html', {'order': order, 'order_items': order_items})
 

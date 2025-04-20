@@ -1500,15 +1500,15 @@ input[type="submit"] {
 }
 
 .homepage-bg-1 {
-  background-image: url(../img/hero-bg.jpg);
+  background-image: url(../img/bg_1.jpg);
 }
 
 .homepage-bg-2 {
-  background-image: url(../img/hero-bg-2.jpg);
+  background-image: url(../img/bg_2.jpg);
 }
 
 .homepage-bg-3 {
-  background-image: url(../img/hero-bg-3.jpg);
+  background-image: url(../img/bg_3.jpg);
 }
 
 .homepage-slider {

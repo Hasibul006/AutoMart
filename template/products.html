@@ -316,7 +316,11 @@
                         <p class="card-text text-light">{{ product.description|truncatewords:15 }}</p>
                         <p class="card-text fw-bold text-success">{{ product.price }} Tk</p>
                         <a href="/product_details/{{ product.id }}" class="btn view-details-btn btn-sm">View Details</a>
+                        {% if product.stock %}
                         <a href="/add_to_cart/{{ product.id }}" class="btn view-details-btn btn-sm">Add to Cart</a>
+                        {% else %}
+                        <p class="text-danger">Out of Stock</p>
+                        {% endif %}
                     </div>
                 </div>
             </div>
