@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Details | MyStore</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #121212;
+            color: #f1f1f1;
+        }
+        .order-card {
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 30px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.4);
+        }
+        .order-card h5 {
+            color: #00d1b2;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #aaa;
+        }
+        .info-value {
+            font-size: 16px;
+        }
+        .btn-view {
+            background-color: #00d1b2;
+            color: white;
+        }
+        .btn-view:hover {
+            background-color: #00a98f;
+        }
+        footer {
+            background-color: #1c1c1c;
+            color: #aaa;
+            padding: 40px 0 20px;
+        }
+        footer h5 {
+            color: #fff;
+        }
+        footer a {
+            color: #aaa;
+            text-decoration: none;
+        }
+        footer a:hover {
+            color: #fff;
+        }
+        .social-icons a {
+            color: #aaa;
+            font-size: 20px;
+            margin-right: 10px;
+        }
+        .social-icons a:hover {
+            color: #00d1b2;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Header -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="/">MyStore</a>
+        <div class="collapse navbar-collapse justify-content-end">
+            <ul class="navbar-nav">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="/products">Products</a></li>
+                <li class="nav-item"><a class="nav-link" href="/profile">Profile</a></li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Order Details -->
+<div class="container my-5">
+    <div class="order-card">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h4>Order #{{ order.id }}</h4>
+            <span class="badge bg-success">
+                <i class="far fa-clock me-1"></i> {{ order.ordered_at|date:"M d, Y - h:i A" }}
+            </span>
+        </div>
+
+        <!-- Customer Info -->
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <p><strong>Name:</strong> {{ order.fullname }}</p>
+                <p><strong>Email:</strong> {{ order.email }}</p>
+                <p><strong>Phone:</strong> {{ order.phone }}</p>
+            </div>
+            <div class="col-md-6">
+                <p><strong>Address:</strong> {{ order.address }}</p>
+                <p><strong>Payment Method:</strong> {{ order.payment_method }}</p>
+                <p><strong>Total Price:</strong> ${{ order.total_price }}</p>
+            </div>
+        </div>
+
+        <!-- Ordered Items -->
+        <h5 class="mb-3">Ordered Products</h5>
+        <div class="table-responsive">
+            <table class="table table-dark table-striped table-hover text-center align-middle">
+                <thead class="table-secondary text-dark">
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Company</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Subtotal</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in order_items %}
+                    <tr>
+                        <td><img src="{{ item.product.image.url }}" alt="product" class="img-thumbnail" style="height: 60px;"></td>
+                        <td>{{ item.product.name }}</td>
+                        <td>{{ item.product.company }}</td>
+                        <td>{{ item.quantity }}</td>
+                        <td>${{ item.price }}</td>
+                        <td>${{ item.price|floatformat:2|floatformat:"2"|add:"0"|floatformat:2|stringformat:"s"|add:item.quantity|stringformat:"s" }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                <tfoot>
+                    <tr class="table-success text-dark fw-bold">
+                        <td colspan="5" class="text-end">Total:</td>
+                        <td>${{ order.total_price }}</td>
+                    </tr>
+                </tfoot>
+            </table>
+        </div>
+
+        <div class="text-end mt-4">
+            <a href="{% url 'profile' %}" class="btn btn-outline-info">
+                <i class="fas fa-arrow-left me-1"></i> Back to Profile
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-4">
+                <h5>Contact Us</h5>
+                <ul class="list-unstyled">
+                    <li><i class="fas fa-map-marker-alt me-2"></i> 123, Green Street, MyCity, Bangladesh</li>
+                    <li><i class="fas fa-envelope me-2"></i> support@mystore.com</li>
+                    <li><i class="fas fa-phone me-2"></i> +880 123456789</li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li><a href="#"><i class="fas fa-chevron-right me-2"></i> Home</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right me-2"></i> About Us</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right me-2"></i> Products</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right me-2"></i> Contact</a></li>
+                    <li><a href="#"><i class="fas fa-chevron-right me-2"></i> Privacy Policy</a></li>
+                </ul>
+            </div>
+            <div class="col-md-4">
+                <h5>Follow Us</h5>
+                <p>Stay connected on social media</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                </div>
+                <div class="mt-3">
+                    <p>Subscribe to our mailing list</p>
+                    <div class="input-group">
+                        <input type="email" class="form-control bg-dark border-secondary" placeholder="Your email">
+                        <button class="btn btn-success" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <hr class="my-4" style="border-color: #444;">
+        <div class="text-center">
+            <p class="mb-0">&copy; {% now "Y" %} MyStore. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

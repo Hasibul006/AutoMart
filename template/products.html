@@ -1,0 +1,439 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Products</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --light: #1e1e1e;
+            --dark: #e0e0e0;
+            --success: #28a745;
+            --danger: #f72585;
+            --warning: #f8961e;
+            --info: #560bad;
+            --bg-dark: #121212;
+            --card-bg: #1e1e1e;
+            --border-color: #333;
+        }
+        
+        body {
+            background-color: var(--bg-dark);
+            color: var(--dark);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .navbar {
+            background-color: var(--card-bg);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--success) !important;
+            font-size: 1.8rem;
+        }
+
+        .navbar-nav .nav-link {
+            color: var(--dark) !important;
+            font-size: 1.1rem;
+            transition: color 0.3s ease;
+        }
+
+        .navbar-nav .nav-link:hover {
+            color: var(--success) !important;
+        }
+
+        .hero-banner {
+            width: 100%;
+            height: 350px;
+            background: url("{% static 'banner.jpg' %}") center center/cover no-repeat;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #fff;
+            font-size: 3rem;
+            font-weight: bold;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+        }
+
+        .category-btns .btn {
+            margin: 5px;
+            border-radius: 25px;
+            color: var(--dark);
+            border-color: var(--success);
+            transition: all 0.3s ease;
+        }
+
+        .category-btns .btn.active,
+        .category-btns .btn:hover {
+            background-color: var(--success);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .form-control,
+        .form-select {
+            background-color: #2b2b2b;
+            color: var(--dark);
+            border-color: var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus,
+        .form-select:focus {
+            border-color: var(--success);
+            box-shadow: 0 0 0 0.25rem rgba(40, 167, 69, 0.25);
+        }
+
+        .form-control::placeholder {
+            color: #aaa;
+        }
+
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            height: 100%;
+        }
+
+        .product-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 15px rgba(0, 255, 100, 0.1);
+            border-color: var(--success);
+        }
+
+        .product-image {
+            height: 250px;
+            object-fit: cover;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .view-details-btn {
+            background-color: var(--success);
+            color: white;
+            border-radius: 25px;
+            transition: all 0.3s ease;
+        }
+
+        .view-details-btn:hover {
+            background-color: #218838;
+            transform: translateY(-2px);
+        }
+
+        .pagination .page-link {
+            background-color: var(--card-bg);
+            color: var(--success);
+            border-color: var(--border-color);
+            transition: all 0.3s ease;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: var(--success);
+            color: white;
+            border-color: var(--success);
+        }
+
+        .pagination .page-link:hover {
+            background-color: rgba(40, 167, 69, 0.1);
+        }
+
+        footer {
+            background-color: var(--card-bg);
+            color: #aaa;
+            padding: 4rem 0 2rem;
+            margin-top: 3rem;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer h5 {
+            color: var(--success);
+            margin-bottom: 1.5rem;
+            font-weight: 600;
+        }
+
+        footer a {
+            color: #ddd;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--success);
+            text-decoration: none;
+        }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            margin-right: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .social-icons a:hover {
+            background: var(--success);
+            transform: translateY(-3px);
+        }
+
+        .scroll-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: none;
+            background-color: var(--success);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1.2rem;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .scroll-top:hover {
+            background-color: #218838;
+            transform: translateY(-3px);
+        }
+
+        @media (max-width: 768px) {
+            .hero-banner {
+                height: 250px;
+                font-size: 2rem;
+            }
+            
+            .navbar {
+                padding: 0.8rem;
+            }
+            
+            .navbar-brand {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<!-- Updated Header -->
+<nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <h1 class="fw-bold">GariGhora</h1>
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarContent">
+            <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">About</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">News</a></li>
+                <li class="nav-item"><a class="nav-link" href="#">Contact</a></li>
+            </ul>
+            <div class="d-flex align-items-center">
+                {% if user.is_authenticated %}
+                    <a href="/cart" class="btn btn-outline-success me-2 position-relative">
+                        <i class="fas fa-shopping-cart"></i>
+                        {% if total_cart %}
+                        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                            {{ total_cart }}
+                        </span>
+                        {% endif %}
+                    </a>
+                    <a href="{% url 'profile' %}" class="btn btn-outline-success me-2">
+                        <i class="fas fa-user-circle"></i>
+                    </a>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-success me-2">Log In</a>
+                    <a href="{% url 'signup' %}" class="btn btn-success">Sign Up</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Banner -->
+<div class="hero-banner">
+    Our Amazing Products
+</div>
+
+<!-- Main Content -->
+<div class="container mt-5">
+    <!-- Search + Sorting -->
+    <form method="get" class="row mb-4 g-2">
+        <div class="col-md-6">
+            <input type="text" name="q" class="form-control" placeholder="Search products..." value="{{ query }}">
+        </div>
+        <div class="col-md-3">
+            <select name="sort" class="form-select">
+                <option value="name" {% if sort_by == "name" %}selected{% endif %}>Sort by Name</option>
+                <option value="price" {% if sort_by == "price" %}selected{% endif %}>Sort by Price</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <button class="btn btn-outline-success w-100" type="submit">Apply</button>
+        </div>
+    </form>
+
+    <!-- Categories -->
+    <div class="category-btns text-center mb-4">
+        <a href="{% url 'products' %}" class="btn {% if not selected_category %}active{% endif %}">All</a>
+        {% for category in categories %}
+            <a href="?category={{ category.id }}&q={{ query }}&sort={{ sort_by }}" class="btn {% if selected_category.id == category.id %}active{% endif %}">
+                {{ category.name }}
+            </a>
+        {% endfor %}
+    </div>
+
+    <!-- Products -->
+    <div class="row">
+        {% for product in page_obj %}
+            <div class="col-md-4 mb-4">
+                <div class="card product-card h-100">
+                    {% if product.image %}
+                        <img src="{{ product.image.url }}" class="product-image card-img-top" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{% static 'no-image.png' %}" class="product-image card-img-top" alt="No image">
+                    {% endif %}
+                    <div class="card-body">
+                        <h5 class="card-title text-light">{{ product.name }}</h5>
+                        <p class="card-text text-light">{{ product.description|truncatewords:15 }}</p>
+                        <p class="card-text fw-bold text-success">{{ product.price }} Tk</p>
+                        <a href="/product_details/{{ product.id }}" class="btn view-details-btn btn-sm">View Details</a>
+                        <a href="/add_to_cart/{{ product.id }}" class="btn view-details-btn btn-sm">Add to Cart</a>
+                    </div>
+                </div>
+            </div>
+        {% empty %}
+            <p class="text-center col-12">No products found.</p>
+        {% endfor %}
+    </div>
+
+    <!-- Pagination -->
+    <div class="d-flex justify-content-center mt-4">
+        <nav>
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.previous_page_number }}&q={{ query }}&category={{ selected_category.id }}&sort={{ sort_by }}">Previous</a>
+                    </li>
+                {% endif %}
+                {% for page in page_obj.paginator.page_range %}
+                    <li class="page-item {% if page_obj.number == page %}active{% endif %}">
+                        <a class="page-link" href="?page={{ page }}&q={{ query }}&category={{ selected_category.id }}&sort={{ sort_by }}">{{ page }}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ page_obj.next_page_number }}&q={{ query }}&category={{ selected_category.id }}&sort={{ sort_by }}">Next</a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+</div>
+
+<!--  Footer -->
+<footer class="bg-black text-light pt-5 pb-4">
+    <div class="container">
+        <div class="row">
+            <!-- Contact Us -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h5 class="text-success mb-3">Contact Us</h5>
+                <ul class="list-unstyled small text-light">
+                    <li class="mb-2"><i class="fas fa-map-marker-alt me-2"></i> 123, Green Street, MyCity, Bangladesh</li>
+                    <li class="mb-2"><i class="fas fa-envelope me-2"></i> support@mystore.com</li>
+                    <li class="mb-2"><i class="fas fa-phone me-2"></i> +880 123456789</li>
+                </ul>
+            </div>
+
+            <!-- Quick Links -->
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h5 class="text-success mb-3">Quick Links</h5>
+                <ul class="list-unstyled">
+                    <li class="mb-2"><a href="/" class="text-light text-decoration-none"><i class="fas fa-chevron-right me-2"></i> Home</a></li>
+                    <li class="mb-2"><a href="#" class="text-light text-decoration-none"><i class="fas fa-chevron-right me-2"></i> About Us</a></li>
+                    <li class="mb-2"><a href="/products" class="text-light text-decoration-none"><i class="fas fa-chevron-right me-2"></i> Products</a></li>
+                    <li class="mb-2"><a href="#" class="text-light text-decoration-none"><i class="fas fa-chevron-right me-2"></i> Contact</a></li>
+                    <li class="mb-2"><a href="#" class="text-light text-decoration-none"><i class="fas fa-chevron-right me-2"></i> Privacy Policy</a></li>
+                </ul>
+            </div>
+
+            <!-- Follow Us + Newsletter -->
+            <div class="col-lg-4 col-md-12 mb-4">
+                <h5 class="text-success mb-3">Follow Us</h5>
+                <p class="text-light small">Stay connected with us on social media</p>
+                <div class="d-flex gap-3 mb-3 fs-5">
+                    <a href="#" class="text-light"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" class="text-light"><i class="fab fa-twitter"></i></a>
+                    <a href="#" class="text-light"><i class="fab fa-instagram"></i></a>
+                    <a href="#" class="text-light"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="#" class="text-light"><i class="fab fa-youtube"></i></a>
+                </div>
+                <div class="mt-3">
+                    <p class="text-light small mb-2">Subscribe to our Mailing List</p>
+                    <div class="input-group">
+                        <input type="email" class="form-control bg-dark border-secondary text-light" placeholder="Your email">
+                        <button class="btn btn-success" type="button">Subscribe</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr class="border-secondary my-4">
+        <div class="text-center">
+            <p class="mb-0 text-light small">&copy; {% now "Y" %} GariGhora. All rights reserved.</p>
+        </div>
+    </div>
+</footer>
+
+
+<!-- Scroll to top button -->
+<button class="scroll-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'})">
+    <i class="fas fa-arrow-up"></i>
+</button>
+
+<!-- Scripts -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Scroll to top button
+        window.addEventListener("scroll", function() {
+            const scrollBtn = document.querySelector(".scroll-top");
+            if (window.scrollY > 300) {
+                scrollBtn.style.display = "flex";
+                scrollBtn.style.alignItems = "center";
+                scrollBtn.style.justifyContent = "center";
+            } else {
+                scrollBtn.style.display = "none";
+            }
+        });
+
+        // Add animation to product cards
+        const productCards = document.querySelectorAll('.product-card');
+        productCards.forEach((card, index) => {
+            setTimeout(() => {
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, 100 * index);
+        });
+    });
+</script>
+</body>
+</html>
