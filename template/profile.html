@@ -433,18 +433,21 @@
 <div class="profile-container">
     <div class="profile-header">
         <div class="action-btns">
-            <button class="action-btn edit-btn" title="Edit Profile">
-                <i class="fas fa-pencil-alt"></i>
-            </button>
+            <a href="{% url 'edit_user' user.username %}" class="action-btn edit-btn" title="Edit Profile">
+                <i class="fas fa-edit"></i>
+            </a>
+              
             <a href="{% url 'logout' %}" class="action-btn logout-btn" title="Logout">
                 <i class="fas fa-sign-out-alt"></i>
             </a>
         </div>
-        <img src="https://ui-avatars.com/api/?name={{ user.fullname|urlencode }}&background=random&size=128&rounded=true&color=fff" alt="Profile Picture" class="profile-pic">
+        {% if user.profile_image %} 
+          <img src="{{ user.profile_image.url }}" alt="Profile Picture" class="profile-pic">
+        {% endif %}
         <h1 class="username">{{ user.username }}</h1>
         <h2 class="fullname">{{ user.fullname }}</h2>
         <span class="role-badge {% if user.role == 'admin' %}role-admin{% else %}role-user{% endif %}">
-            {{ user.get_role_display }}
+            {{ user.role }}
         </span>
     </div>
     
@@ -493,9 +496,10 @@
                 <div class="info-value">
                     {% if user.address %}
                         {{ user.address|linebreaks }}
-                        <button class="btn btn-sm btn-outline-success mt-2">
+                        <a href="{% url 'edit_user' user.username %}" class="square-btn " title="Edit Profile">
                             <i class="fas fa-edit"></i> Edit Address
-                        </button>
+                        </a>
+                                                 
                     {% else %}
                         <span class="text-muted">No address saved</span>
                         <button class="btn btn-sm btn-success mt-2">

@@ -91,7 +91,7 @@
 <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
     <div class="container">
         <a class="navbar-brand" href="/">
-            <h1 class="fw-bold">GariGhora</h1>
+            <h1 class="fw-bold">AutoMart</h1>
         </a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
             <span class="navbar-toggler-icon"></span>
@@ -143,11 +143,11 @@
                     </div>
                     <div class="mb-3">
                         <label>Phone</label>
-                        <input type="text" name="phone" class="form-control" required>
+                        <input type="text" name="phone" class="form-control" value="{{ user.phone }}" required>
                     </div>
                     <div class="mb-3">
                         <label>Shipping Address</label>
-                        <textarea name="address" class="form-control" rows="3" required></textarea>
+                        <textarea name="address" class="form-control" rows="3" required>{{ user.address }}</textarea>
                     </div>
                     <div class="mb-3">
                         <label>Payment Method</label>

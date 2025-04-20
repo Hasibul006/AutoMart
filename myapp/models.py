@@ -8,6 +8,9 @@ class User(AbstractUser):
         ('user', 'User'),
         ('admin', 'Admin'),
     ]
+    profile_image = models.ImageField(upload_to='profile_images/', null=True, blank=True)
+    phone = models.CharField(max_length=20, null=True, blank=True)
+    address = models.CharField(max_length=200, null=True, blank=True)
     role = models.CharField(max_length=5, choices=ROLE_CHOICES, default='user')
     fullname = models.CharField(max_length=150, default='')
 

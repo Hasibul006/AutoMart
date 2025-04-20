@@ -243,8 +243,7 @@ def place_order(request):
             item.checkout = True
             OrderItem.objects.create(order=order, product=item.product, quantity=item.quantity, price=item.product.price * item.quantity)
             item.save()
-        return redirect('/')
-
+        return redirect('/') 
 def product_details(request, product_id):
     product = Product.objects.get(id=product_id)
     
@@ -302,24 +301,42 @@ def admin_dashboard(request):
     }
     return render(request, 'admin_dashboard.html', context)
 
+from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib import messages
+from .models import User
+
 def edit_user(request, user_name):
     user = get_object_or_404(User, username=user_name)
+
     if user.role == 'admin' and user.username != request.user.username:
-        messages.error(request,"You cannot update the info of an admin.")
+        messages.error(request, "You cannot update the info of an admin.")
         return redirect('/admin_dashboard')
+
+    if not request.user.role == 'user' and user != request.user:
+        messages.error(request, "Unauthorized access.")
+        return redirect('profile')
+
     if request.method == 'POST':
         fullname = request.POST.get('fullname', '').strip()
         email = request.POST.get('email', '').strip()
         username = request.POST.get('username', '').strip()
-        role = request.POST.get('role', '').strip()
+        phone = request.POST.get('phone', '').strip()
+        address = request.POST.get('address', '').strip()
+        image = request.FILES.get('image')
+        print(image)
+        
         user.fullname = fullname
         user.email = email
         user.username = username
-        user.role = role
+        user.phone = phone
+        user.address = address
+        if image:
+            user.profile_image = image
         user.save()
+
         messages.success(request, "User updated successfully.")
-        return redirect('/admin_dashboard')
-    
+        return redirect('/admin_dashboard' if user.role == 'admin' else '/profile')
+
     return render(request, 'edit_user.html', {'user': user})
 
 def login(request):
@@ -350,7 +367,10 @@ def signup(request):
         email = request.POST.get('email').strip()
         username = request.POST.get('username').strip()
         password = request.POST.get('password').strip()
-        role = request.POST.get('role').strip() 
+        phone = request.POST.get('phone').strip()
+        address = request.POST.get('address').strip()
+        image = request.FILES.get('image')
+
 
         # Check if username already exists
         if User.objects.filter(username=username).exists():
@@ -363,7 +383,7 @@ def signup(request):
             return render(request, 'signup.html')
 
         # Create the user
-        user = User.objects.create_user(username=username, email=email, password=password, role=role, fullname=fullname)
+        user = User.objects.create_user(username=username, email=email, fullname=fullname, password=password, phone=phone, address=address, role='user', profile_image=image)
         user.save()
 
         auth_login(request, user)
