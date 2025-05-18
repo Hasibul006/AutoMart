@@ -2,6 +2,32 @@
 
 AutoMart is a feature-rich e-commerce platform built with Django. It allows users to browse products, manage carts, and place orders, while admins can manage products, categories, and users.
 
+## ✅ Live Demo
+
+## 🌐 Live Demo
+
+Check out the live version of the project here:
+
+🔗 [Live Site](https://hasibul06.pythonanywhere.com/)
+
+---
+
+### 🔐 Login Credentials
+
+#### Admin Access
+- **Username:** `admin`
+- **Password:** `123`
+
+#### Test User Access
+- **Username:** `user`
+- **Password:** `123`
+
+---
+
+Feel free to explore both admin and user dashboards!
+
+
+
 ## 🛠 Features
 
 ### 👥 User Roles
