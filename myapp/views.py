@@ -319,9 +319,9 @@ def delete_user(request, user_name):
     return redirect('/admin_dashboard')
 
 def admin_dashboard(request):
-    if not request.user.is_authenticated:
+    if not request.user.is_authenticated or request.user == None:
         return redirect('/login')
-    if request.user.role != 'admin':
+    if request.user and request.user.role != 'admin':
         messages.error(request, "You are not authorized to access this page.")
         return redirect('/')
     
@@ -349,7 +349,7 @@ def edit_user(request, user_name):
         messages.error(request, "You cannot update the info of an admin.")
         return redirect('/admin_dashboard')
 
-    if not request.user.role == 'user' and user != request.user:
+    if not request.user.role == 'admin' and request.user.role == 'user' and user != request.user:
         messages.error(request, "Unauthorized access.")
         return redirect('profile')
 
@@ -372,7 +372,7 @@ def edit_user(request, user_name):
         user.save()
 
         messages.success(request, "User updated successfully.")
-        return redirect('/admin_dashboard' if user.role == 'admin' else '/profile')
+        return redirect('/admin_dashboard' if request.user.role == 'admin' else '/profile')
 
     return render(request, 'edit_user.html', {'user': user})
 

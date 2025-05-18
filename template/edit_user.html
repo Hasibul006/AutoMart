@@ -231,7 +231,7 @@
                                 <a href="/admin_dashboard" class="btn btn-secondary btn-lg">
                                     <i class="fas fa-arrow-left me-2"></i> Back
                                 </a>
-                                {% else %}
+                                {% elif user.role == 'user' %}
                                 <a href="/profile" class="btn btn-secondary btn-lg">
                                     <i class="fas fa-arrow-left me-2"></i> Back
                                 </a>
