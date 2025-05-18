@@ -171,7 +171,7 @@ def add_product(request):
     return render(request, 'add_product.html', {'categories': categories})
 
 def index(request):
-    if request.user.role == 'admin':
+    if request.user.is_authenticated and request.user.role == 'admin':
         return redirect('/admin_dashboard')
     products = Product.objects.all()
     if request.user.is_authenticated:
@@ -319,6 +319,8 @@ def delete_user(request, user_name):
     return redirect('/admin_dashboard')
 
 def admin_dashboard(request):
+    if not request.user.is_authenticated:
+        return redirect('/login')
     if request.user.role != 'admin':
         messages.error(request, "You are not authorized to access this page.")
         return redirect('/')
