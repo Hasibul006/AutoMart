@@ -171,6 +171,8 @@ def add_product(request):
     return render(request, 'add_product.html', {'categories': categories})
 
 def index(request):
+    if request.user.role == 'admin':
+        return redirect('/admin_dashboard')
     products = Product.objects.all()
     if request.user.is_authenticated:
         total_cart = Cart.objects.filter(user=request.user, checkout=False).count()
